@@ -7,6 +7,8 @@ sección** de donde sale, y si el documento no contiene la respuesta, **lo dice 
 de inventarla**.
 
 **En línea:** https://noentendia.vercel.app
+**Código:** https://github.com/LAX0509/noentendia (privado). Cada commit en `main` se
+publica solo en Vercel.
 
 Proyecto final — Análisis de IA. Técnica principal: **RAG (Retrieval-Augmented
 Generation) con LangChain**, más **aprendizaje no supervisado (K-Means)** para los temas.
@@ -34,7 +36,8 @@ Pruebas: `.venv\Scripts\python -m pytest -q` (25 pruebas).
 
 ## Despliegue en Vercel
 
-Proyecto `noentendia` (equipo nieto10). Las claves se configuran en Vercel →
+Proyecto `noentendia` (equipo nieto10). Está conectado al repositorio de GitHub: cada `git push` a
+`main` despliega en producción y los demás ramales generan una vista previa. Las claves se configuran en Vercel →
 noentendia → Settings → Environment Variables (`GROQ_API_KEY_1..3`), nunca en el código.
 Publicar una versión nueva:
 
