@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoEntendIA</title>
+<meta name="description" content="Asistente de estudio con IA: organiza, resume, explica y te hace preguntas de tus apuntes, siempre citando la página.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='58' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>?</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<header class="barra">
+  <button class="marca" id="btn-inicio" title="Volver al inicio">
+    <span class="logo">?</span><span>NoEntend<b>IA</b></span>
+  </button>
+  <span class="estado" id="estado"><span class="punto"></span><span id="estado-txt">Conectando…</span></span>
+</header>
+
+<!-- ============ PANTALLA 1: subir material ============ -->
+<main id="pantalla-inicio" class="inicio">
+  <section class="hero">
+    <h1>¿No entendiste? <span>Sube tu material.</span></h1>
+    <p class="sub">Organizo tus apuntes por temas, los resumo, te explico lo difícil con palabras sencillas
+      y te hago preguntas para practicar. <strong>Siempre te digo la página</strong> de donde sale cada idea,
+      y si tu documento no lo dice, <strong>te lo digo en vez de inventarlo</strong>.</p>
+
+    <label class="zona" id="zona" tabindex="0">
+      <input type="file" id="archivo" accept=".pdf,.txt,.md" multiple hidden>
+      <div class="zona-icono">📄</div>
+      <div class="zona-titulo">Arrastra aquí tus PDF o apuntes</div>
+      <div class="zona-sub">o <u>haz clic para elegirlos</u> · PDF, TXT o MD · puedes subir varios</div>
+    </label>
+    <button class="btn-sec" id="btn-ejemplo">✨ Probar con apuntes de ejemplo (IA, 5 páginas)</button>
+    <p class="nota-priv">🔒 Tu documento se lee en tu navegador; no se guarda en ningún servidor.</p>
+  </section>
+
+  <section class="pasos">
+    <div class="paso"><span>1</span><h3>Sube</h3><p>Tu PDF o tus apuntes desordenados.</p></div>
+    <div class="paso"><span>2</span><h3>Elige un tema</h3><p>Los organizo solos y te los resumo.</p></div>
+    <div class="paso"><span>3</span><h3>Pregunta y practica</h3><p>Con la página exacta para comprobar.</p></div>
+  </section>
+</main>
+
+<!-- ============ Cargando ============ -->
+<div id="cargando" class="cargando" hidden>
+  <div class="spinner"></div>
+  <p id="cargando-txt">Leyendo tu documento…</p>
+</div>
+
+<!-- ============ PANTALLA 2: estudiar ============ -->
+<main id="pantalla-estudio" class="estudio" hidden>
+  <aside class="lateral" id="lateral">
+    <button class="lateral-toggle" id="lateral-toggle" aria-expanded="false">
+      📚 <span id="toggle-txt">Temas</span> <span class="flecha">▾</span>
+    </button>
+    <div class="lateral-cuerpo">
+      <div class="docs" id="docs"></div>
+      <h2>Temas de tu material</h2>
+      <p class="ayuda">Toca un tema para resumirlo o practicar.</p>
+      <ol class="temas" id="temas"></ol>
+      <details class="tecnico">
+        <summary>¿Cómo se organizaron? (K-Means)</summary>
+        <div id="tecnico"></div>
+      </details>
+    </div>
+  </aside>
+
+  <section class="chat">
+    <div class="hilo" id="hilo" aria-live="polite"></div>
+
+    <form class="entrada" id="form">
+      <div class="sugerencias" id="sugerencias"></div>
+      <div class="caja">
+        <textarea id="pregunta" rows="1" maxlength="500"
+          placeholder="Pregúntame algo de tu documento…"></textarea>
+        <button type="submit" class="enviar" id="enviar" title="Enviar">➤</button>
+      </div>
+      <label class="facil"><input type="checkbox" id="facil">
+        <span class="switch"></span> Explícamelo fácil, con un ejemplo</label>
+    </form>
+  </section>
+</main>
+
+<!-- ============ Panel de la fuente ============ -->
+<div class="velo" id="velo" hidden></div>
+<aside class="fuente" id="fuente" hidden aria-label="Texto original">
+  <header>
+    <div><small>Texto original de tu documento</small><h3 id="fuente-titulo"></h3></div>
+    <button class="cerrar" id="fuente-cerrar" aria-label="Cerrar">✕</button>
+  </header>
+  <div class="fuente-cuerpo" id="fuente-cuerpo"></div>
+</aside>
+
+<template id="tpl-bienvenida">
+  <div class="msg bot bienvenida">
+    <div class="avatar">?</div>
+    <div class="burbuja">
+      <p><strong>¡Listo!</strong> Leí <span data-paginas></span> y encontré <strong data-ntemas></strong>.</p>
+      <p>Puedes:</p>
+      <ul>
+        <li>📝 Tocar un <strong>tema</strong> a la izquierda para resumirlo o practicar.</li>
+        <li>💬 Escribirme una <strong>pregunta</strong> abajo.</li>
+        <li>🔎 Tocar cualquier cita como <span class="cita demo">p. 3</span> para ver el texto original.</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
