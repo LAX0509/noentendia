@@ -1,0 +1,7 @@
+fastapi>=0.115
+numpy>=1.26
+pypdf>=5.0
+langchain-core>=0.3
+langchain-text-splitters>=0.3
+langchain-groq>=0.2
+python-dotenv>=1.0
