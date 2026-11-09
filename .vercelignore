@@ -1,0 +1,12 @@
+.env
+.venv
+__pycache__
+.pytest_cache
+.claude
+tests
+entregables
+app.py
+INICIAR_NOENTENDIA.bat
+requirements-dev.txt
+.env*
+!.env.example
